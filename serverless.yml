@@ -1,0 +1,22 @@
+service: feedbin-to-pinboard
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${opt:stage, 'dev'}
+  region: us-west-1
+  profile: default
+package:
+  include:
+    - functions/**
+    - config/**
+functions:
+  getEntries:
+    handler: handler.getEntries
+    events:
+      - http:
+          path: get-entries
+          method: get
