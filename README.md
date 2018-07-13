@@ -64,3 +64,15 @@ Simulate a form post which is what we are doing in jQuery when a user views a pa
 *Note: using [HTTPie](https://httpie.org/) in these examples. You could use curl or Postman if you like.*
 *Note: You will need to update the URL to be the current one you are testing.*
 
+
+## Functions
+
+### Get Feedbin item IDs
+
+### Get Feedbin items
+
+`→ http http://localhost:3000/item ids=[1791355545,1791612624,1791690671,1791783191]`
+
+### Create Pinboard bookmarks
+
+### Unstar Feedbin items

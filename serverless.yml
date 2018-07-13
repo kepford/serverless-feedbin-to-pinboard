@@ -11,12 +11,29 @@ provider:
   profile: default
 package:
   include:
-    - functions/**
-    - config/**
+    - utils/**
 functions:
-  getEntries:
-    handler: handler.getEntries
+  getIds:
+    handler: handler.getIds
     events:
       - http:
-          path: get-entries
+          path: ids
           method: get
+  getItems:
+    handler: handler.getItems
+    events:
+      - http:
+          path: item
+          method: post
+  createBookmark:
+    handler: handler.createBookmark
+    events:
+      - http:
+          path: bookmark
+          method: post
+  unstarItems:
+    handler: handler.unstarItems
+    events:
+      - http:
+          path: unstar
+          method: post
