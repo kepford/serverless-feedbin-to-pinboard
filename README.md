@@ -71,8 +71,15 @@ Simulate a form post which is what we are doing in jQuery when a user views a pa
 
 ### Get Feedbin items
 
-`→ http http://localhost:3000/item ids=[1791355545,1791612624,1791690671,1791783191]`
+`http http://localhost:3000/item ids=[1791355545,1791612624,1791690671,1791783191]`
 
 ### Create Pinboard bookmarks
+
+```
+http http://localhost:3000/bookmark url='https://github.com/kepford/serverless-feedbin-to-pinboard' \
+    description='kepford/serverless-feedbin-to-pinboard' \
+    extended='A Serverless project for creating bookmarks from a Feedbin feed.' \
+    tags='serverless,node-pinboard,test' toread='yes' shared='yes'
+```
 
 ### Unstar Feedbin items

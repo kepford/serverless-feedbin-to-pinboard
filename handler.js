@@ -2,6 +2,7 @@
 
 const getFeedbinEntryIds = require('./utils/getFeedbinEntryIds.js');
 const getFeedbinEntries = require('./utils/getFeedbinEntries.js');
+const createBookmark = require('./utils/createBookmark.js');
 
 module.exports.getIds = (event, context, callback) => {
 
@@ -42,12 +43,24 @@ module.exports.getItems = (event, context, callback) => {
 };
 
 module.exports.createBookmark = (event, context, callback) => {
+  const options = JSON.parse(event.body);
+  const bookmark = createBookmark(options);
+  bookmark.then(response => {
 
-  // TODO: Call unstarItems
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify({ message: `Created bookmark ${event.body}`
-    })
+    // TODO: Call unstarItems
+    response.result_code === 'done'
+      ?
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Created bookmark successfully.'
+        })
+      })
+      :
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify({ message: `No bookmark was created. Error response from Pinboard: ${response.result_code}`
+        })
+      });
   });
 };
 
