@@ -36,4 +36,4 @@ functions:
     events:
       - http:
           path: unstar
-          method: post
+          method: delete

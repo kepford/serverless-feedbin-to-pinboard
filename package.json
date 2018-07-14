@@ -4,6 +4,7 @@
   "main": "handler.js",
   "scripts": {
     "serverless": "serverless",
+    "offline": "serverless offline start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

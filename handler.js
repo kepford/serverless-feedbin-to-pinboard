@@ -3,6 +3,7 @@
 const getFeedbinEntryIds = require('./utils/getFeedbinEntryIds.js');
 const getFeedbinEntries = require('./utils/getFeedbinEntries.js');
 const createBookmark = require('./utils/createBookmark.js');
+const unstarFeedbin = require('./utils/unstarFeedbin.js');
 
 module.exports.getIds = (event, context, callback) => {
 
@@ -64,13 +65,18 @@ module.exports.createBookmark = (event, context, callback) => {
 };
 
 module.exports.unstarItems = (event, context, callback) => {
+  const ids = JSON.parse(event.body);
+  const unstar = unstarFeedbin(ids);
+  unstar.then(response => {
+    console.log('response', response);
 
-  // TODO: Implement unstar API call.
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Unstared Item ${event.body}`
-    })
+    // TODO: Implement unstar API call.
+    callback(null, {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `Unstared Items: ${response}`
+      })
+    });
   });
 };
 

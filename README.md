@@ -83,3 +83,8 @@ http http://localhost:3000/bookmark url='https://github.com/kepford/serverless-f
 ```
 
 ### Unstar Feedbin items
+
+```
+http DELETE http://localhost:3000/unstar starred_entries=[4089, 4090, 4091]
+
+```
