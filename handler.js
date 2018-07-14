@@ -10,13 +10,12 @@ module.exports.getIds = (event, context, callback) => {
   const contentIds = getFeedbinEntryIds(event);
   contentIds.then(entries => {
     const data = JSON.parse(entries);
-    console.log('data', Object.keys(data).length);
 
     // TODO: Call getItem function.
     callback(null, {
       statusCode: 200,
       body: JSON.stringify({
-        message: data === Object.keys(data).length === 0 ? data : 'No results'
+        message: data === Object.keys(data).length === 0 ? 'No results' : data
       })
     });
   });
