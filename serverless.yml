@@ -2,6 +2,7 @@ service: feedbin-to-pinboard
 
 plugins:
   - serverless-offline
+  - serverless-offline-scheduler
 
 provider:
   name: aws
@@ -13,25 +14,26 @@ package:
   include:
     - utils/**
 functions:
-  getIds:
+  get_ids:
     handler: handler.getIds
     events:
-      - http:
-          path: ids
-          method: get
-  getItems:
+      - schedule:
+          name: check-feedbin
+          description: 'Checks the feedbin url every 5 minutes'
+          rate: rate(5 minutes)
+  get_items:
     handler: handler.getItems
     events:
       - http:
           path: item
           method: post
-  createBookmark:
+  create_bookmark:
     handler: handler.createBookmark
     events:
       - http:
           path: bookmark
           method: post
-  unstarItems:
+  unstar_items:
     handler: handler.unstarItems
     events:
       - http:

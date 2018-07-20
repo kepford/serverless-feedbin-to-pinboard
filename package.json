@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.275.1",
     "node-pinboard": "^1.0.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
@@ -18,7 +19,8 @@
   "devDependencies": {
     "eslint": "^4.19.1",
     "serverless": "^1.27.3",
-    "serverless-offline": "^3.25.4"
+    "serverless-offline": "^3.25.4",
+    "serverless-offline-scheduler": "^0.3.4"
   },
   "description": "Takes a feed of Feedbin entries and creates Pinboard bookmarks."
 }
