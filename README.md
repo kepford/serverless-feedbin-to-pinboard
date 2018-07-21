@@ -1,4 +1,61 @@
-# Serverless SQS Example
+# Serverless: Feedbin Content to Pinboard Bookmark
+
+## Purpose
+
+Provide a reliable service that will look at a [Feedbin.com](https://feedbin.com/) account for starred articles and create bookmarks on the user's [Pinboard.in](https://pinboard.in) account.
+
+## What it does
+
+### 1. Get Feedbin item IDs from a feed such as starred
+
+[Feedbin API docs](https://github.com/feedbin/feedbin-api)
+
+Feedbin will give us an array of IDs. We can then use this to fetch each one.
+
+[Get starred entry IDs](https://github.com/feedbin/feedbin-api/blob/master/content/starred-entries.md)
+
+### 2. Get individual Feedbin items
+
+[Get entries](https://github.com/feedbin/feedbin-api/blob/master/content/entries.md)
+
+**Feedbin Content:**
+
+```
+[
+  {
+    "id": 2077,
+    "feed_id": 135,
+    "title": "Objective-C Runtime Releases",
+    "url": "http:\/\/mjtsai.com\/blog\/2013\/02\/02\/objective-c-runtime-releases\/",
+    "author": "Michael Tsai",
+    "content": "<p><a href=\"https:\/\/twitter.com\/bavarious\/status\/297851496945577984\">Bavarious<\/a> created a <a href=\"https:\/\/github.com\/bavarious\/objc4\/commits\/master\">GitHub repository<\/a> that shows the differences between versions of <a href=\"http:\/\/www.opensource.apple.com\/source\/objc4\/\">Apple\u2019s Objective-C runtime<\/a> that shipped with different versions of Mac OS X.<\/p>",
+    "summary": "Bavarious created a GitHub repository that shows the differences between versions of Apple\u2019s Objective-C runtime that shipped with different versions of Mac OS X.",
+    "published": "2013-02-03T01:00:19.000000Z",
+    "created_at": "2013-02-04T01:00:19.127893Z"
+  }
+]
+```
+
+### 3. Create Pinboard bookmarks
+
+[Pinboard API](https://pinboard.in/api/)
+
+Supported options for bookmarking
+```
+options = {
+  description: 'The title of the bookmark',
+  url: 'http://github.com',
+  toread: 'yes',
+  tags: 'devtools, git',
+  shared: 'yes'
+};
+```
+
+### 4. Unstar or delete starred Feedbin entries
+
+If we successfully bookmark an item we want to unstar it in Feedbin.
+
+[Delete starred entries](https://github.com/feedbin/feedbin-api/blob/master/content/starred-entries.md#delete-starred-entries-unstar)
 
 This project uses the [Serverless framework](https://serverless.com).
 You can get started by following this [guide](https://serverless.com/framework/docs/providers/aws/guide/quick-start/).
@@ -24,6 +81,10 @@ Install all the things
 
 For convenience install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/installing.html).
 Then configure your new CLI by following [this guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
+
+## Environment variables
+
+Copy the `example.env.js` to a new file named `.env.js` and add your own settings there.
 
 ## Local development
 
@@ -56,35 +117,3 @@ Deploys the function named functionName to the dev environment.
 The default environment we use is dev so if you wanted to deploy to prod environment you would do `-s prod`.
 
 `npm run serverless -- deploy -s prod`
-
-## Testing
-
-Simulate a form post which is what we are doing in jQuery when a user views a page.
-
-*Note: using [HTTPie](https://httpie.org/) in these examples. You could use curl or Postman if you like.*
-*Note: You will need to update the URL to be the current one you are testing.*
-
-
-## Functions
-
-### Get Feedbin item IDs
-
-### Get Feedbin items
-
-`http http://localhost:3000/item ids=[1791355545,1791612624,1791690671,1791783191]`
-
-### Create Pinboard bookmarks
-
-```
-http http://localhost:3000/bookmark url='https://github.com/kepford/serverless-feedbin-to-pinboard' \
-    description='kepford/serverless-feedbin-to-pinboard' \
-    extended='A Serverless project for creating bookmarks from a Feedbin feed.' \
-    tags='serverless,node-pinboard,test' toread='yes' shared='yes'
-```
-
-### Unstar Feedbin items
-
-```
-http DELETE http://localhost:3000/unstar starred_entries=[4089, 4090, 4091]
-
-```
