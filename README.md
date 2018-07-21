@@ -88,15 +88,15 @@ Copy the `example.env.js` to a new file named `.env.js` and add your own setting
 
 ## Local development
 
-Run `npm run serverless offline start`
+Run `npm run sls offline start`
 
 ## Testing Locally
 
-`npm run serverless -- invoke -f functionName -l`
+`npm run sls -- invoke -f functionName -l`
 
 ## Watching Log for a Function
 
-`npm run serverless -- logs -f hello -s dev -t`
+`npm run sls -- logs -f hello -s dev -t`
 Tail the logs on dev for function named hello.
 
 
@@ -104,11 +104,11 @@ Tail the logs on dev for function named hello.
 
 ### Deploy all project code
 
-`npm run serverless -- deploy`
+`npm run sls -- deploy`
 
 ### Deploy one function
 
-`npm run serverless -- deploy -f functionName -s dev`
+`npm run sls -- deploy -f functionName -s dev`
 Deploys the function named functionName to the dev environment.
 
 
@@ -116,4 +116,4 @@ Deploys the function named functionName to the dev environment.
 
 The default environment we use is dev so if you wanted to deploy to prod environment you would do `-s prod`.
 
-`npm run serverless -- deploy -s prod`
+`npm run sls -- deploy -s prod`
