@@ -4,79 +4,55 @@ const getFeedbinEntryIds = require('./utils/getFeedbinEntryIds.js');
 const getFeedbinEntries = require('./utils/getFeedbinEntries.js');
 const createBookmark = require('./utils/createBookmark.js');
 const unstarFeedbin = require('./utils/unstarFeedbin.js');
+const config = require('./.env.js');
 
 module.exports.getIds = (event, context, callback) => {
 
   // Get entries from Feedbin.
-  const contentIds = getFeedbinEntryIds(event);
-  contentIds.then(entries => {
-    const data = JSON.parse(entries);
-
-    // TODO: Call getItem function.
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: data === Object.keys(data).length === 0 ? 'No results' : data
-      })
-    });
-  });
+  // Calls getItem lambda function.
+  getFeedbinEntryIds(event);
 };
 
 module.exports.getItems = (event, context, callback) => {
-  const body = JSON.parse(event.body);
-  const contentIds = JSON.parse(body.ids);
-  const entryContent = getFeedbinEntries(contentIds);
+  const ids = JSON.parse(event);
+  const entryContent = getFeedbinEntries(ids);
   entryContent.then(data => {
-
-    // Convert strings to objects.
     const items = data.map(item => JSON.parse(item));
+    items.forEach(function(item) {
+      const options = {
+        description: item.title,
+        url: item.url,
+        toread: config.pinboard.hasOwnProperty('toread') ? config.pinboard.toread : 'no',
+        tags: config.pinboard.hasOwnProperty('tags') ? config.pinboard.tags : '',
+        shared: config.pinboard.hasOwnProperty('shared') ? config.pinboard.shared : 'no'
+      };
+      const bookmark = createBookmark(options, item.id);
+      bookmark.then(pbRes=> {
 
-    // TODO: Call createBookmark.
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: items
-      })
-    });
-  }
-  );
-};
+        // Unstar if the bookmark was created.
+        if (pbRes.result_code === 'done') {
+          const unstar = unstarFeedbin({
+            starred_entries: [pbRes.id]
+          });
+          unstar.then(fbRes => {
+            callback(null, {
+              statusCode: 200,
+              body: JSON.stringify({
+                message: `Created bookmark and unstared Item: ${fbRes.id}`
+              })
+            });
+          });
 
-module.exports.createBookmark = (event, context, callback) => {
-  const options = JSON.parse(event.body);
-  const bookmark = createBookmark(options);
-  bookmark.then(response => {
-
-    // TODO: Call unstarItems
-    response.result_code === 'done'
-      ?
-      callback(null, {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Created bookmark successfully.'
-        })
-      })
-      :
-      callback(null, {
-        statusCode: 200,
-        body: JSON.stringify({ message: `No bookmark was created. Error response from Pinboard: ${response.result_code}`
-        })
+        }
+        else {
+          callback(null, {
+            statusCode: 200,
+            body: JSON.stringify({
+              message: `Response code ${pbRes.result_code} for Feedbin ID: ${pbRes.id}`
+            })
+          });
+        }
       });
-  });
-};
-
-module.exports.unstarItems = (event, context, callback) => {
-  const ids = JSON.parse(event.body);
-  const unstar = unstarFeedbin(ids);
-  unstar.then(response => {
-    console.log('response', response);
-
-    // TODO: Implement unstar API call.
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: `Unstared Items: ${response}`
-      })
     });
   });
 };
-

@@ -10,6 +10,14 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: us-west-1
   profile: default
+  environment:
+    REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
 package:
   include:
     - utils/**
@@ -27,15 +35,3 @@ functions:
       - http:
           path: item
           method: post
-  create_bookmark:
-    handler: handler.createBookmark
-    events:
-      - http:
-          path: bookmark
-          method: post
-  unstar_items:
-    handler: handler.unstarItems
-    events:
-      - http:
-          path: unstar
-          method: delete

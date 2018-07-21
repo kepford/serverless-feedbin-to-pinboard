@@ -9,6 +9,8 @@ module.exports = {
   pinboard: {
     user: 'dudenamedben',
     apiKey: '1234',
-    tags: 'mytag,anotherTag'
+    tags: 'mytag,anotherTag',
+    toread: 'yes',
+    shared: 'yes'
   }
 };
