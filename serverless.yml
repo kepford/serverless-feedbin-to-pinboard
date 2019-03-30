@@ -26,7 +26,7 @@ functions:
     handler: handler.getIds
     events:
       - schedule:
-          name: check-feedbin
+          name: ${self:provider.stage}.check-feedbin
           description: 'Checks the feedbin url every 5 minutes'
           rate: rate(5 minutes)
   get_items:
