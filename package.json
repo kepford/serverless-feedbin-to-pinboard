@@ -2,6 +2,10 @@
   "name": "feedbin-to-pinboard",
   "version": "1.0.0",
   "main": "handler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kepford/serverless-feedbin-to-pinboard.git"
+  },
   "scripts": {
     "sls": "serverless",
     "offline": "sls offline start",
