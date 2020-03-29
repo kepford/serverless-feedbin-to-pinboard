@@ -12,25 +12,27 @@ module.exports = () => {
     region
   });
   const contentIds = feedbinRequest(config.feedbin.url);
-  contentIds.then(ids => {
-    if (ids === '[]') {
-      return 'No results';
-    }
-    const params = {
-      FunctionName: 'feedbin-to-pinboard-' + stage + '-get_items',
-      InvocationType: 'RequestResponse',
-      LogType: 'Tail',
-      Payload: JSON.stringify(ids)
-    };
+  contentIds.then(res => res.json())
+    .then(ids => {
+      console.log('ids', ids);
+      if (ids === '[]') {
+        return 'No results';
+      }
+      const params = {
+        FunctionName: 'feedbin-to-pinboard-' + stage + '-get_items',
+        InvocationType: 'RequestResponse',
+        LogType: 'Tail',
+        Payload: JSON.stringify(ids)
+      };
 
-    return lambda.invoke(params, function(error, data) {
-      if (error) {
-        console.error(JSON.stringify(error));
-        return new Error(`Error fetching content: ${JSON.stringify(error)}`);
-      }
-      else if (data) {
-        return JSON.stringify(data);
-      }
+      return lambda.invoke(params, function(error, data) {
+        if (error) {
+          console.error(JSON.stringify(error));
+          return new Error(`Error fetching content: ${JSON.stringify(error)}`);
+        }
+        else if (data) {
+          return JSON.stringify(data);
+        }
+      });
     });
-  });
 };

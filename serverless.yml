@@ -1,23 +1,29 @@
 service: feedbin-to-pinboard
 
 plugins:
+  - serverless-pseudo-parameters
   - serverless-offline
   - serverless-offline-scheduler
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
   region: us-west-1
   profile: default
   environment:
     REGION: ${self:provider.region}
     STAGE: ${self:provider.stage}
+    ACCOUNTID: '#{AWS::AccountId}'
   iamRoleStatements:
     - Effect: Allow
       Action:
         - "lambda:InvokeFunction"
       Resource: "*"
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "sns:*"
 package:
   include:
     - utils/**
@@ -35,3 +41,12 @@ functions:
       - http:
           path: item
           method: post
+  getItems:
+    handler: getItems.handler
+    events:
+      - sns: get-items-topic # created immediately
+    onError: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:dlq-topic
+  error:
+    handler: error.handler
+    events:
+      - sns: dlq-topic # created immediately
