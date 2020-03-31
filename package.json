@@ -7,8 +7,12 @@
     "url": "git+https://github.com/kepford/serverless-feedbin-to-pinboard.git"
   },
   "scripts": {
-    "sls": "serverless",
-    "offline": "sls offline start",
+    "offline": "serverless offline start",
+    "deploy-dev": "serverless deploy -s dev -v",
+    "deploy-test": "serverless deploy -s test -v",
+    "deploy-prod": "serverless deploy -s prod -v",
+    "log-dev": "serverless logs -t -s dev  -v -f ",
+    "log-test": "serverless logs -t -s test -v -f ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

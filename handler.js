@@ -1,7 +1,7 @@
 'use strict';
 
 const getFeedbinEntryIds = require('./utils/getFeedbinEntryIds.js');
-const getFeedbinEntries = require('./utils/getFeedbinEntries.js');
+const feedbinRequest = require('./utils/feedbinRequest.js');
 const createBookmark = require('./utils/createBookmark.js');
 const unstarFeedbin = require('./utils/unstarFeedbin.js');
 const config = require('./.env.js');
@@ -10,26 +10,26 @@ module.exports.getIds = (event, context, callback) => {
 
   // Get entries from Feedbin.
   // Calls getItem lambda function.
-  getFeedbinEntryIds(event);
+  getFeedbinEntryIds(event, context);
 };
 
 module.exports.getItems = (event, context, callback) => {
-  const ids = JSON.parse(event);
-  const entryContent = getFeedbinEntries(ids);
-  entryContent.then(data => {
-    const items = data.map(item => JSON.parse(item));
-    items.forEach(function(item) {
+  const ids = event.Records[0].body;
+  const entryContent = feedbinRequest('https://api.feedbin.com/v2/entries/' + ids + '.json');
+  entryContent.then(res => res.json())
+    .then(item => {
       const options = {
         description: item.title,
         url: item.url,
         toread: config.pinboard.hasOwnProperty('toread') ? config.pinboard.toread : 'no',
         tags: config.pinboard.hasOwnProperty('tags') ? config.pinboard.tags : '',
         shared: config.pinboard.hasOwnProperty('shared') ? config.pinboard.shared : 'no'
-      };
+      }
       const bookmark = createBookmark(options, item.id);
-      bookmark.then(pbRes=> {
+      bookmark.then(pbRes => {
+        console.log('pbRes', pbRes);
 
-        // Unstar if the bookmark was created.
+        //Unstar if the bookmark was created.
         if (pbRes.result_code === 'done') {
           const unstar = unstarFeedbin({
             starred_entries: [pbRes.id]
@@ -53,6 +53,6 @@ module.exports.getItems = (event, context, callback) => {
           });
         }
       });
+      return item;
     });
-  });
 };

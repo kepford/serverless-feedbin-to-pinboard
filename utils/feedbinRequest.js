@@ -5,7 +5,7 @@ const config = require('./../.env.js');
 
 // Returns a list of IDs
 module.exports = (url, method, body) => {
-  const auth = 'Basic ' + new Buffer(config.feedbin.username + ':' + config.feedbin.password).toString('base64');
+  const auth = 'Basic ' + Buffer.from(config.feedbin.username + ':' + config.feedbin.password).toString('base64');
   method = method || 'GET';
   body = JSON.stringify(body) || null;
   return fetch(url, {

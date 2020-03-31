@@ -15,6 +15,8 @@ provider:
     REGION: ${self:provider.region}
     STAGE: ${self:provider.stage}
     ACCOUNTID: '#{AWS::AccountId}'
+    idQueue: ${self:service}-${self:provider.stage}-id-queue
+    idQueueDLQ: ${self:service}-${self:provider.stage}-id-queue-dlq
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -23,30 +25,40 @@ provider:
     - Effect: "Allow"
       Resource: "*"
       Action:
-        - "sns:*"
+        - "sqs:*"
 package:
   include:
     - utils/**
 functions:
   get_ids:
     handler: handler.getIds
-    events:
-      - schedule:
-          name: ${self:provider.stage}.check-feedbin
-          description: 'Checks the feedbin url every 5 minutes'
-          rate: rate(5 minutes)
+    # events:
+    #   - schedule:
+    #       name: ${self:provider.stage}.check-feedbin
+    #       description: 'Checks the feedbin url every 5 minutes'
+    #       rate: rate(5 minutes)
   get_items:
     handler: handler.getItems
     events:
-      - http:
-          path: item
-          method: post
-  getItems:
-    handler: getItems.handler
-    events:
-      - sns: get-items-topic # created immediately
-    onError: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:dlq-topic
-  error:
-    handler: error.handler
-    events:
-      - sns: dlq-topic # created immediately
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:#{AWS::AccountId}:${self:service}-${self:provider.stage}-id-queue
+          batchSize: 1
+
+resources:
+  Resources:
+   # Create our 'id' SQS queue
+    idQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-id-queue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt
+            - idQueueDLQ
+            - Arn
+          maxReceiveCount: 3
+
+    # Create our 'id' Dead Letter Queue SQS queue
+    idQueueDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-id-queue-dlq
