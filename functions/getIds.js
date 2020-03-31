@@ -1,15 +1,16 @@
 'use strict';
 const AWS = require('aws-sdk');
 const config = require('./../.env.js');
-const feedbinRequest = require('./feedbinRequest.js');
+const feedbinRequest = require('./../utils/feedbinRequest.js');
 const region = process.env.REGION;
 const accountId = process.env.ACCOUNTID;
 const idQueue = process.env.idQueue;
 const sqs = new AWS.SQS({region});
 const queUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${idQueue}`;
 
-// Returns a list of IDs
-module.exports = (event, context) => {
+module.exports.getIds = (event, context, callback) => {
+
+  // Returns a list of IDs
   const contentIds = feedbinRequest(config.feedbin.url);
   contentIds.then(res => res.json())
     .then(ids => {

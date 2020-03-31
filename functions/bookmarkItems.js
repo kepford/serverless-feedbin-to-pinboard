@@ -1,19 +1,14 @@
 'use strict';
 
-const getFeedbinEntryIds = require('./utils/getFeedbinEntryIds.js');
-const feedbinRequest = require('./utils/feedbinRequest.js');
-const createBookmark = require('./utils/createBookmark.js');
-const unstarFeedbin = require('./utils/unstarFeedbin.js');
-const config = require('./.env.js');
+const feedbinRequest = require('./../utils/feedbinRequest.js');
+const createBookmark = require('./../utils/createBookmark.js');
+const unstarFeedbin = require('./../utils/unstarFeedbin.js');
+const config = require('./../.env.js');
 
-module.exports.getIds = (event, context, callback) => {
+module.exports.bookmarkItems = (event, context, callback) => {
 
-  // Get entries from Feedbin.
-  // Calls getItem lambda function.
-  getFeedbinEntryIds(event, context);
-};
-
-module.exports.getItems = (event, context, callback) => {
+  // Event source is SQS queue.
+  // Batch size is 1.
   const ids = event.Records[0].body;
   const entryContent = feedbinRequest('https://api.feedbin.com/v2/entries/' + ids + '.json');
   entryContent.then(res => res.json())
@@ -24,10 +19,9 @@ module.exports.getItems = (event, context, callback) => {
         toread: config.pinboard.hasOwnProperty('toread') ? config.pinboard.toread : 'no',
         tags: config.pinboard.hasOwnProperty('tags') ? config.pinboard.tags : '',
         shared: config.pinboard.hasOwnProperty('shared') ? config.pinboard.shared : 'no'
-      }
+      };
       const bookmark = createBookmark(options, item.id);
       bookmark.then(pbRes => {
-        console.log('pbRes', pbRes);
 
         //Unstar if the bookmark was created.
         if (pbRes.result_code === 'done') {

@@ -29,16 +29,17 @@ provider:
 package:
   include:
     - utils/**
+    - functions/**
 functions:
-  get_ids:
-    handler: handler.getIds
-    # events:
-    #   - schedule:
-    #       name: ${self:provider.stage}.check-feedbin
-    #       description: 'Checks the feedbin url every 5 minutes'
-    #       rate: rate(5 minutes)
-  get_items:
-    handler: handler.getItems
+  getIds:
+    handler: functions/getIds.getIds
+    events:
+      - schedule:
+          name: ${self:provider.stage}.check-feedbin
+          description: 'Checks the feedbin url every 5 minutes'
+          rate: rate(5 minutes)
+  bookmarkItems:
+    handler: functions/bookmarkItems.bookmarkItems
     events:
       - sqs:
           arn: arn:aws:sqs:${self:provider.region}:#{AWS::AccountId}:${self:service}-${self:provider.stage}-id-queue
