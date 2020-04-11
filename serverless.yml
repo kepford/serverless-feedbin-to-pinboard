@@ -27,6 +27,7 @@ provider:
     idQueue: ${self:service}-${self:provider.stage}-id-queue
     idQueueDLQ: ${self:service}-${self:provider.stage}-id-queue-dlq
     LAMBDA_SCHEDULE: ${self:custom.environment.LAMBDA_SCHEDULE}
+    LAMBDA_SCHEDULE_STATUS: ${self:custom.environment.LAMBDA_SCHEDULE_STATUS}
     FEEDBIN_URL: ${self:custom.environment.FEEDBIN_URL}
     FEEDBIN_USERNAME: ${self:custom.environment.FEEDBIN_USERNAME}
     FEEDBIN_PASSWORD: ${self:custom.environment.FEEDBIN_PASSWORD}
@@ -55,6 +56,7 @@ functions:
       - schedule:
           name: ${self:provider.stage}.check-feedbin
           description: 'Checks the feedbin url periodically'
+          enabled: ${self:provider.environment.LAMBDA_SCHEDULE_STATUS}
           rate: rate(${self:provider.environment.LAMBDA_SCHEDULE})
   bookmarkItems:
     handler: functions/bookmarkItems.bookmarkItems
