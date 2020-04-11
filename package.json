@@ -13,6 +13,7 @@
     "deploy-prod": "serverless deploy -s prod -v",
     "log-dev": "serverless logs -t -s dev  -v -f ",
     "log-test": "serverless logs -t -s test -v -f ",
+    "log-prod": "serverless logs -t -s prod -v -f ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
