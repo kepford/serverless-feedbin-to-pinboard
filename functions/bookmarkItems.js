@@ -3,7 +3,6 @@
 const feedbinRequest = require('./../utils/feedbinRequest.js');
 const createBookmark = require('./../utils/createBookmark.js');
 const unstarFeedbin = require('./../utils/unstarFeedbin.js');
-const config = require('./../.env.js');
 
 module.exports.bookmarkItems = (event, context, callback) => {
 
@@ -16,9 +15,9 @@ module.exports.bookmarkItems = (event, context, callback) => {
       const options = {
         description: item.title,
         url: item.url,
-        toread: config.pinboard.hasOwnProperty('toread') ? config.pinboard.toread : 'no',
-        tags: config.pinboard.hasOwnProperty('tags') ? config.pinboard.tags : '',
-        shared: config.pinboard.hasOwnProperty('shared') ? config.pinboard.shared : 'no'
+        toread: process.env.hasOwnProperty('PINBOARD_TOREAD') ? process.env.PINBOARD_TOREAD : 'no',
+        tags: process.env.hasOwnProperty('PINBOARD_TAGS') ? process.env.PINBOARD_TAGS : '',
+        shared: process.env.hasOwnProperty('PINBOARD_SHARED') ? process.env.PINBOARD_SHARED : 'no'
       };
       const bookmark = createBookmark(options, item.id);
       bookmark.then(pbRes => {

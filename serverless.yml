@@ -5,6 +5,15 @@ plugins:
   - serverless-offline
   - serverless-offline-scheduler
 
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+
+  # Load our secret environment variables based on the current stage.
+  # Fallback to default if it is not in prod.
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -17,6 +26,15 @@ provider:
     ACCOUNTID: '#{AWS::AccountId}'
     idQueue: ${self:service}-${self:provider.stage}-id-queue
     idQueueDLQ: ${self:service}-${self:provider.stage}-id-queue-dlq
+    LAMBDA_SCHEDULE: ${self:custom.environment.LAMBDA_SCHEDULE}
+    FEEDBIN_URL: ${self:custom.environment.FEEDBIN_URL}
+    FEEDBIN_USERNAME: ${self:custom.environment.FEEDBIN_USERNAME}
+    FEEDBIN_PASSWORD: ${self:custom.environment.FEEDBIN_PASSWORD}
+    PINBOARD_USER: ${self:custom.environment.PINBOARD_USER}
+    PINBOARD_APITOKEN: ${self:custom.environment.PINBOARD_APITOKEN}
+    PINBOARD_TAGS: ${self:custom.environment.PINBOARD_TAGS}
+    PINBOARD_TOREAD: ${self:custom.environment.PINBOARD_TOREAD}
+    PINBOARD_SHARED: ${self:custom.environment.PINBOARD_SHARED}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -36,8 +54,8 @@ functions:
     events:
       - schedule:
           name: ${self:provider.stage}.check-feedbin
-          description: 'Checks the feedbin url every 5 minutes'
-          rate: rate(5 minutes)
+          description: 'Checks the feedbin url periodically'
+          rate: rate(${self:provider.environment.LAMBDA_SCHEDULE})
   bookmarkItems:
     handler: functions/bookmarkItems.bookmarkItems
     events:
