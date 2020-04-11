@@ -1,8 +1,7 @@
 'use strict';
 
 const Pinboard = require('node-pinboard');
-const config = require('./../.env.js');
-const apiToken = config.pinboard.apiToken;
+const apiToken = process.env.PINBOARD_APITOKEN;
 const pinboard = new Pinboard(apiToken);
 
 module.exports = (options, id) => {
