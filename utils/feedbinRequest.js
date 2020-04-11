@@ -1,23 +1,20 @@
 'use strict';
 
-const request = require('request-promise');
-const config = require('./../.env.js');
+const fetch = require('node-fetch');
+const username = process.env.FEEDBIN_USERNAME;
+const password = process.env.FEEDBIN_PASSWORD;
 
 // Returns a list of IDs
 module.exports = (url, method, body) => {
+  const auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
   method = method || 'GET';
   body = JSON.stringify(body) || null;
-  return request({
-    'auth': {
-      'user': config.feedbin.username,
-      'pass': config.feedbin.password,
-      'sendImmediately': false
-    },
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
-    },
+  return fetch(url, {
     method,
-    url,
-    body
+    body,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Authorization': auth
+    }
   });
 };

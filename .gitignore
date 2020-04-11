@@ -1,5 +1,6 @@
 # Environment file
 .env.js
+env.yml
 
 # package directories
 node_modules

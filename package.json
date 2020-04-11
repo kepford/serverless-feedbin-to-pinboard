@@ -7,27 +7,31 @@
     "url": "git+https://github.com/kepford/serverless-feedbin-to-pinboard.git"
   },
   "scripts": {
-    "sls": "serverless",
-    "offline": "sls offline start",
+    "offline": "serverless offline start",
+    "deploy-dev": "serverless deploy -s dev -v",
+    "deploy-test": "serverless deploy -s test -v",
+    "deploy-prod": "serverless deploy -s prod -v",
+    "log-dev": "serverless logs -t -s dev  -v -f ",
+    "log-test": "serverless logs -t -s test -v -f ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.432.0",
-    "node-pinboard": "^1.0.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "aws-sdk": "^2.648.0",
+    "node-fetch": "^2.6.0",
+    "node-pinboard": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^3.6.0",
     "eslint-plugin-prettier": "^2.7.0",
     "prettier": "1.14.2",
-    "serverless": "^1.40.0",
+    "serverless": "^1.67.0",
     "serverless-offline": "^3.33.0",
-    "serverless-offline-scheduler": "^0.3.7"
+    "serverless-offline-scheduler": "^0.3.8",
+    "serverless-pseudo-parameters": "^2.5.0"
   },
   "description": "Takes a feed of Feedbin entries and creates Pinboard bookmarks."
 }
