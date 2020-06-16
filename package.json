@@ -22,7 +22,7 @@
   "dependencies": {
     "aws-sdk": "^2.648.0",
     "node-fetch": "^2.6.0",
-    "node-pinboard": "^1.0.0"
+    "node-pinboard": "^2.0.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
