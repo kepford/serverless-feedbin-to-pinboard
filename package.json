@@ -20,7 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.648.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-pinboard": "^1.0.0"
   },
   "devDependencies": {
