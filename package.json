@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.648.0",
+    "aws-sdk": "^2.814.0",
     "node-fetch": "^2.6.0",
     "node-pinboard": "^1.0.0"
   },
