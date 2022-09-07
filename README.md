@@ -88,7 +88,7 @@ Copy the `example.env.js` to a new file named `.env.js` and add your own setting
 
 ## Local development
 
-Run `npm run sls offline start`
+Run `npm run offline`
 
 ## Testing Locally
 
