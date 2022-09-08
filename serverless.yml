@@ -21,7 +21,7 @@ provider:
   environment:
     REGION: ${self:provider.region}
     STAGE: ${self:provider.stage}
-    ACCOUNTID: '#{AWS::AccountId}'
+    ACCOUNTID: '${aws:accountId}'
     idQueue: ${self:service}-${self:provider.stage}-id-queue
     idQueueDLQ: ${self:service}-${self:provider.stage}-id-queue-dlq
     LAMBDA_SCHEDULE: ${self:custom.environment.LAMBDA_SCHEDULE}
@@ -34,17 +34,19 @@ provider:
     PINBOARD_TAGS: ${self:custom.environment.PINBOARD_TAGS}
     PINBOARD_TOREAD: ${self:custom.environment.PINBOARD_TOREAD}
     PINBOARD_SHARED: ${self:custom.environment.PINBOARD_SHARED}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - "lambda:InvokeFunction"
-      Resource: "*"
-    - Effect: "Allow"
-      Resource: "*"
-      Action:
-        - "sqs:*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "lambda:InvokeFunction"
+          Resource: "*"
+        - Effect: "Allow"
+          Resource: "*"
+          Action:
+            - "sqs:*"
 package:
-  include:
+  patterns:
     - utils/**
     - functions/**
 functions:
@@ -60,7 +62,7 @@ functions:
     handler: functions/bookmarkItems.bookmarkItems
     events:
       - sqs:
-          arn: arn:aws:sqs:${self:provider.region}:#{AWS::AccountId}:${self:service}-${self:provider.stage}-id-queue
+          arn: arn:aws:sqs:${self:provider.region}:${aws:accountId}:${self:service}-${self:provider.stage}-id-queue
           batchSize: 1
 
 resources:
