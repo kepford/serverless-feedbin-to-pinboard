@@ -30,7 +30,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "2.0.4",
     "serverless": "^3.22.0",
-    "serverless-offline": "^10.0.0"
+    "serverless-offline": "^10.3.2"
   },
   "description": "Takes a feed of Feedbin entries and creates Pinboard bookmarks."
 }
